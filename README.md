@@ -7,7 +7,7 @@ This script downloads any Git repository and extracts statistics from its commit
 To use this code, run the following command:
 
 ```bash
-git clone git@github.com:JointlyTech/spione.git && cd spione && npm install
+git clone git@github.com:JointlyTech/spyone.git && cd spyone && npm install
 ```
 
 Then, run the following command to generate a heatmap:
