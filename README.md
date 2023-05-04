@@ -1,4 +1,4 @@
-_spiyne_ is a tool that generates a JSON heatmap of any Git repository's commits.  
+_spyone_ is a tool that generates a JSON heatmap of any Git repository's commits.  
 It comes from the italian word _spione_, which means _spy_.
 
 This script downloads any Git repository and extracts statistics from its commits. The resulting data is then sorted by commit count, and if there is a tie, by the sum of additions and deletions in descending order.
