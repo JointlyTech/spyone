@@ -14,8 +14,5 @@
     "files"
   ],
   "author": "Jointly <dev@jointly.pro>",
-  "license": "MIT",
-  "dependencies": {
-    "simple-git": "^3.17.0"
-  }
+  "license": "MIT"
 }
