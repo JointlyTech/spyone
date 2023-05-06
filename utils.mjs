@@ -11,15 +11,12 @@ const EXCLUDED_FILES = [
 ];
 
 export const downloadRepo = (repoUrl, dir, branchName = "main") => {
-  return new Promise((resolve, reject) => {
-    const repoName = repoUrl.split("/").pop().replace(".git", "");
-    try {
-      const cloneArgs = `git clone ${repoUrl} ${dir} --branch ${branchName}`;
-      const result = execSync(`${cloneArgs}`).toString();
-      resolve(result);
-    } catch (err) {
-      reject(err);
-    }
+  return new Promise((resolve) => {
+    const cloneArgs = `git clone ${repoUrl} ${dir} --branch ${branchName}`;
+    const result = execSync(`${cloneArgs}`).toString();
+    resolve(result);
+  }).catch((err) => {
+    console.error(err);
   });
 };
 
@@ -85,13 +82,11 @@ export const getFileHistory = (repoHistory, file) => {
 };
 
 export const getRepoHistory = (dir, daysAmount) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const args = `git log --pretty=format: --numstat --since="${daysAmount} days ago"`;
-      const result = execSync(`cd ${dir} && ${args}`).toString();
-      resolve(result);
-    } catch (err) {
-      reject(err);
-    }
+  return new Promise((resolve) => {
+    const args = `git log --pretty=format: --numstat --since="${daysAmount} days ago"`;
+    const result = execSync(`cd ${dir} && ${args}`).toString();
+    resolve(result);
+  }).catch((err) => {
+    console.error(err);
   });
 };
