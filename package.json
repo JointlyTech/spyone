@@ -1,6 +1,6 @@
 {
   "name": "@jointly/spyone",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple script able to download any Git repository and extracts statistics from its commits, showing most touched files.",
   "main": "index.mjs",
   "scripts": {
@@ -13,8 +13,8 @@
     "commits",
     "files"
   ],
-  "author": "Michael Di Prisco <cadienvan@gmail.com>",
-  "license": "ISC",
+  "author": "Jointly <dev@jointly.pro>",
+  "license": "MIT",
   "dependencies": {
     "simple-git": "^3.17.0"
   }
