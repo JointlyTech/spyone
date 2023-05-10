@@ -17,6 +17,9 @@
   ],
   "author": "Jointly <dev@jointly.pro>",
   "license": "MIT",
+  "devDependencies": {
+    "prettier": "^2.8.8"
+  },
   "dependencies": {
     "simple-git": "^3.17.0"
   }
