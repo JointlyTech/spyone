@@ -1,21 +1,21 @@
-import os from "os";
-import git from "simple-git";
+import os from 'os';
+import git from 'simple-git';
 
 const EXCLUDED_FILES = [
-  "package-lock.json",
-  "package.json",
-  "yarn.lock",
-  "CHANGELOG.md",
-  "composer.lock",
-  "",
+  'package-lock.json',
+  'package.json',
+  'yarn.lock',
+  'CHANGELOG.md',
+  'composer.lock',
+  ''
 ];
 
-export const downloadRepo = (repoUrl, dir, branchName = "main") => {
+export const downloadRepo = (repoUrl, dir, branchName = 'main') => {
   return new Promise((resolve, reject) => {
-    const repoName = repoUrl.split("/").pop().replace(".git", "");
+    const repoName = repoUrl.split('/').pop().replace('.git', '');
 
     // Clone the repo in the tmp directory using simple-git
-    git(dir).clone(repoUrl, dir, ["--branch", branchName], (err) => {
+    git(dir).clone(repoUrl, dir, ['--branch', branchName], (err) => {
       if (err) {
         reject(err);
       } else {
@@ -28,12 +28,12 @@ export const downloadRepo = (repoUrl, dir, branchName = "main") => {
 // Given a path to a directory, get the list of addition and deletion counts from the git history of each file
 export const getData = (dir, daysAmount) => {
   return new Promise(async (resolve, reject) => {
-    console.log("Getting repo history...");
+    console.log('Getting repo history...');
     getRepoHistory(dir, daysAmount).then((repoHistory) => {
       const files = repoHistory
         .split(os.EOL)
         .map((line) => {
-          return line.split("\t").pop();
+          return line.split('\t').pop();
         })
         .filter((file) => {
           return EXCLUDED_FILES.includes(file) === false;
@@ -48,10 +48,10 @@ export const getData = (dir, daysAmount) => {
         // Get the list of addition and deletion counts
         const counts = result.split(os.EOL).map((line) => {
           if (line.length === 0) return { additions: 0, deletions: 0 };
-          const [additions, deletions] = line.split("\t");
+          const [additions, deletions] = line.split('\t');
           return {
             additions: parseInt(additions),
-            deletions: parseInt(deletions),
+            deletions: parseInt(deletions)
           };
         });
 
@@ -60,7 +60,7 @@ export const getData = (dir, daysAmount) => {
           (prev, curr) => {
             return {
               additions: prev.additions + curr.additions,
-              deletions: prev.deletions + curr.deletions,
+              deletions: prev.deletions + curr.deletions
             };
           },
           { additions: 0, deletions: 0 }
@@ -68,7 +68,7 @@ export const getData = (dir, daysAmount) => {
         fileData.set(file, {
           additions: total.additions || 0,
           deletions: total.deletions || 0,
-          commitCount: files.filter((f) => f === file).length,
+          commitCount: files.filter((f) => f === file).length
         });
       }
       resolve(fileData);
@@ -80,7 +80,7 @@ export const getFileHistory = (repoHistory, file) => {
   const fileHistory = repoHistory
     .split(os.EOL)
     .filter((line) => {
-      return line.split("\t").pop() === file;
+      return line.split('\t').pop() === file;
     })
     .join(os.EOL);
   return fileHistory;
@@ -90,10 +90,10 @@ export const getRepoHistory = (dir, daysAmount) => {
   return new Promise((resolve, reject) => {
     git(dir).raw(
       [
-        "log",
-        "--pretty=format:",
-        "--numstat",
-        `--since="${daysAmount} days ago"`,
+        'log',
+        '--pretty=format:',
+        '--numstat',
+        `--since="${daysAmount} days ago"`
       ],
       (err, result) => {
         if (err) {

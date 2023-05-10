@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import path from "path";
-import fs from "fs";
-import { downloadRepo, getData } from "./utils.mjs";
-import http from "http";
-import { exec } from "child_process";
-import os from "os";
+import path from 'path';
+import fs from 'fs';
+import { downloadRepo, getData } from './utils.mjs';
+import http from 'http';
+import { exec } from 'child_process';
+import os from 'os';
 
 // First argument passed via CLI is the url of a github repo
 const repoUrl = process.argv[2];
@@ -13,14 +13,14 @@ const repoUrl = process.argv[2];
 const daysAmount = process.argv[3];
 
 // Third argument passed via CLI is the name of the branch to consider
-const branchName = process.argv[4] || "main";
+const branchName = process.argv[4] || 'main';
 
-const tmpDir = path.join(os.tmpdir(), "tmp-spyone");
+const tmpDir = path.join(os.tmpdir(), 'tmp-spyone');
 
-const resultsDir = path.join(os.tmpdir(), "results");
+const resultsDir = path.join(os.tmpdir(), 'results');
 
 if (!repoUrl || !daysAmount) {
-  console.error("Usage: npx @jointly/spyone <repo-url> <commit-count>");
+  console.error('Usage: npx @jointly/spyone <repo-url> <commit-count>');
   process.exit(1);
 }
 
@@ -33,11 +33,11 @@ if (fs.existsSync(tmpDir)) {
 fs.mkdirSync(tmpDir);
 
 // Download the repo
-console.log("Downloading repo...");
+console.log('Downloading repo...');
 await downloadRepo(repoUrl, tmpDir, branchName);
 
 // Get the data
-console.log("Getting data...");
+console.log('Getting data...');
 let data = await getData(tmpDir, daysAmount);
 
 // Sort data map by commitsCount, if equal sort by additions + deletions
@@ -60,9 +60,9 @@ const today = new Date();
 const resultsFileName = `${today.getFullYear()}-${
   today.getMonth() + 1
 }-${today.getDate()}-${today.getHours()}-${today.getMinutes()}-${repoUrl
-  .split("/")
+  .split('/')
   .pop()
-  .replace(".git", "")}-${daysAmount}-${branchName}.json`;
+  .replace('.git', '')}-${daysAmount}-${branchName}.json`;
 const resultsFilePath = path.join(resultsDir, resultsFileName);
 const fileContent = JSON.stringify([...data.entries()]);
 fs.writeFileSync(resultsFilePath, fileContent);
@@ -83,15 +83,15 @@ console.log(`Results saved to ${resultsFilePath}, total stats: ${stats}`);
 const server = http.createServer(function (req, res) {
   fs.readFile(resultsFilePath, function (err, data) {
     if (err) throw err;
-    res.writeHead(200, { "Content-Type": "application/json" });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(data);
     res.end();
   });
 });
 
 server.listen(9666, function () {
-  console.log("Server running at http://localhost:9666/");
-  console.log("Ctrl+c to exit");
+  console.log('Server running at http://localhost:9666/');
+  console.log('Ctrl+c to exit');
   // open the URL in the default browser
-  exec("open http://localhost:9666/");
+  exec('open http://localhost:9666/');
 });
