@@ -20,7 +20,7 @@ const tmpDir = path.join(os.tmpdir(), "tmp-spyone");
 const resultsDir = path.join(os.tmpdir(), "results");
 
 if (!repoUrl || !daysAmount) {
-  console.error("Usage: node index.mjs <repo-url> <commit-count>");
+  console.error("Usage: npx @jointly/spyone <repo-url> <commit-count>");
   process.exit(1);
 }
 
