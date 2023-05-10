@@ -15,9 +15,9 @@ const daysAmount = process.argv[3];
 // Third argument passed via CLI is the name of the branch to consider
 const branchName = process.argv[4] || "main";
 
-const tmpDir = os.tmpdir() + "tmp-spyone";
+const tmpDir = path.join(os.tmpdir(), "tmp-spyone");
 
-const resultsDir = os.tmpdir() + "/results";
+const resultsDir = path.join(os.tmpdir(), "results");
 
 if (!repoUrl || !daysAmount) {
   console.error("Usage: node index.mjs <repo-url> <commit-count>");
