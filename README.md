@@ -5,7 +5,7 @@ Please, keep in mind this project is not perfect. It was made to analyze our mos
 
 ## What does it do?
 
-This script downloads any Git repository and extracts statistics from its commits. The resulting data is then sorted by commit count, and if there is a tie, by the sum of additions and deletions in descending order. The result is saved in a folder called `results/` with a self-explanatory name (`yyyy-m-dd-hh-mm-{repo-slug}-{days-to-cover}-{branch-name}.json`).
+This script downloads any Git repository and extracts statistics from its commits. The resulting data is then sorted by commit count, and if there is a tie, by the sum of additions and deletions in descending order. The result is opened in your default browser and you're able to save it in any location on your computer.
 
 ## Usage
 
