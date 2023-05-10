@@ -5,7 +5,8 @@
   "main": "index.mjs",
   "bin": "./index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "prettier --write ."
   },
   "keywords": [
     "git",
