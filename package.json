@@ -3,8 +3,10 @@
   "version": "0.0.2",
   "description": "A simple script able to download any Git repository and extracts statistics from its commits, showing most touched files.",
   "main": "index.mjs",
+  "bin": "./index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "prettier --write ."
   },
   "keywords": [
     "git",
@@ -15,6 +17,9 @@
   ],
   "author": "Jointly <dev@jointly.pro>",
   "license": "MIT",
+  "devDependencies": {
+    "prettier": "^2.8.8"
+  },
   "dependencies": {
     "simple-git": "^3.17.0"
   }
