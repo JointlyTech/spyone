@@ -5,15 +5,39 @@ import { downloadRepo, getData } from './utils.mjs';
 import http from 'http';
 import { exec } from 'child_process';
 import os from 'os';
+import net from 'net';
+import pkg from 'enquirer';
+const { prompt } = pkg;
 
-// First argument passed via CLI is the url of a github repo
-const repoUrl = process.argv[2];
+const response = await prompt([
+  {
+    type: 'input',
+    name: 'repoUrl',
+    message: 'Enter the url of the repo to analyze',
+    required: true
+  },
+  {
+    type: 'input',
+    name: 'daysAmount',
+    message: 'Enter the number of days to consider',
+    required: true
+  },
+  {
+    type: 'input',
+    name: 'branchName',
+    message: 'Enter the name of the branch to consider',
+    initial: 'main'
+  },
+  {
+    type: 'select',
+    name: 'outputFormat',
+    message: 'Choose the output format',
+    choices: ['json', 'html'],
+    initial: 'json'
+  }
+]);
 
-// Second argument passed via CLI is the number of days to consider
-const daysAmount = process.argv[3];
-
-// Third argument passed via CLI is the name of the branch to consider
-const branchName = process.argv[4] || 'main';
+const { repoUrl, daysAmount, branchName, outputFormat } = response;
 
 const tmpDir = path.join(os.tmpdir(), 'tmp-spyone');
 
