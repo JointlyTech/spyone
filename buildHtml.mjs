@@ -2,16 +2,40 @@
 export function buildHtml(req) {
   const data = req;
   var head = `
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" />
     `;
-  var body = `
-        
 
+  var body = `
+        <div class='container-fluid'>
+            <h1 class="display-3">Welcome to spyone!</h1>
+            <h2 class="display-4">
+                Download your results (in json format):
+                <button id='download' class='btn btn-primary'>Download</button>
+            </h2>
+            <canvas id="myChart"></canvas>
+        </div>
+        
+        
+        <!-- JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             const data = ${data};
 
-              
+            function downloadObjectAsJson(exportObj, exportName) {
+                var dataStr =
+                'data:text/json;charset=utf-8,' +
+                encodeURIComponent(JSON.stringify(exportObj));
+                var downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute('href', dataStr);
+                downloadAnchorNode.setAttribute('download', exportName + '.json');
+                document.body.appendChild(downloadAnchorNode); // required for firefox
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            }
+
+            document.getElementById('download').addEventListener('click', function () {
+                downloadObjectAsJson(data, 'results-repo.json');
+            });   
         
             const fileData = data.map(([file,stats]) => ({
                 file,
@@ -66,8 +90,7 @@ export function buildHtml(req) {
         </script>
     `;
 
-  // concatenate header string
-  // concatenate body string
+  // Return the html page
   return (
     '<!DOCTYPE html>' +
     '<html><head>' +
