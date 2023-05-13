@@ -8,6 +8,9 @@ import { exec } from 'child_process';
 import os from 'os';
 import net from 'net';
 
+// Default port for the server
+let DEFAULT_PORT = 9666;
+
 // First argument passed via CLI is the url of a github repo
 const repoUrl = process.argv[2];
 
@@ -104,9 +107,45 @@ const server = http.createServer(function (req, res) {
   });
 });
 
-server.listen(9666, function () {
-  console.log('Server running at http://localhost:9666/');
-  console.log('Ctrl+c to exit');
-  // open the URL in the default browser
-  exec('open http://localhost:9666/');
-});
+// Check if the port is available
+const tester = net
+  .createServer()
+  .once('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      handleListenError(error);
+    }
+  })
+  .once('listening', () => {
+    tester
+      .once('close', () => {
+        startServer();
+      })
+      .close();
+  })
+  .listen(DEFAULT_PORT);
+
+// Start the server
+function startServer() {
+  server.listen(DEFAULT_PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${DEFAULT_PORT}/`);
+    console.log('🛑 Ctrl+c to exit');
+    // open the URL in the default browser
+    exec(`open http://localhost:${DEFAULT_PORT}/`);
+  });
+}
+
+// Handle listen error
+function handleListenError(error) {
+  if (error.code === 'EADDRINUSE') {
+    console.warn(
+      `❌ Port ${DEFAULT_PORT} is already in use. Trying another port...`
+    );
+    setTimeout(() => {
+      server.close();
+      DEFAULT_PORT++;
+      startServer();
+    }, 1000);
+  } else {
+    console.error(error);
+  }
+}
