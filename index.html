@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Spyone</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <div class='container-fluid'>
+        <h1 class="display-3">Welcome to spyone!</h1>
+        <h2 class="display-4">
+            Download the full result (in json format):
+            <button id='download' class='btn btn-primary'>Download</button>
+        </h2>
+        <div id="showWhenHasMoreThanMax" class="invisible">
+            <button id="full-result" class="btn-danger"></button>
+            <div id="max-files" class="blockquote-footer"></div>
+        </div>
+        <canvas id="myChart"></canvas>
+    </div>
+
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        if (!fullData) {
+            alert('No data found!')
+        }
+        //check if the data is available and if length is greater than 250
+        const MAX_FILE = 250;
+        const hasMoreThanMaxFiles = fullData.length > MAX_FILE;
+        let data = hasMoreThanMaxFiles ? fullData.slice(0, MAX_FILE) : fullData;
+
+        if (hasMoreThanMaxFiles) {
+            document.getElementById('full-result').innerText = `Show full result - (${fullData.length} files)`;
+            document.getElementById('max-files').innerText = `Only show top ${MAX_FILE} files`;
+            document.getElementById('showWhenHasMoreThanMax').classList.remove('invisible');
+        }
+
+        function downloadObjectAsJson(exportObj, exportName) {
+            var dataStr =
+                'data:text/json;charset=utf-8,' +
+                encodeURIComponent(JSON.stringify(exportObj));
+            var downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute('href', dataStr);
+            downloadAnchorNode.setAttribute('download', exportName + '.json');
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        document.getElementById('download').addEventListener('click', function () {
+            downloadObjectAsJson(data, 'results-repo');
+        });
+
+        const fileData = data.map(([file, stats]) => ({
+            file,
+            additions: stats.additions,
+            deletions: stats.deletions
+        }));
+
+        // Sort the files by total changes (additions + deletions)
+        fileData.sort(
+            (a, b) => b.additions + b.deletions - a.additions - a.deletions
+        );
+
+        // Create the chart data
+        const chartData = {
+            labels: fileData.map((file) => file.file),
+            datasets: [
+                {
+                    label: 'Additions',
+                    backgroundColor: '#36a2ea',
+                    borderColor: '#36a2ea',
+                    borderWidth: 1,
+                    data: fileData.map((file) => file.additions)
+                },
+                {
+                    label: 'Deletions',
+                    backgroundColor: '#f66384',
+                    borderColor: '#f66384',
+                    borderWidth: 1,
+                    data: fileData.map((file) => file.deletions)
+                }
+            ]
+        };
+
+        // Create the chart
+        const canvas = document.getElementById('myChart');
+
+        const chart = new Chart(canvas, {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Spyone - Your Repo Bar Chart'
+                    }
+                }
+            },
+        });
+
+        document.getElementById('full-result').addEventListener('click', function () {
+            chart.data.labels = fullData.map(([file, stats]) => file);
+            chart.data.datasets[0].data = fullData.map(([file, stats]) => stats.additions);
+            chart.data.datasets[1].data = fullData.map(([file, stats]) => stats.deletions);
+            chart.update();
+            document.getElementById('showWhenHasMoreThanMax').classList.add('invisible');
+        });
+    </script>
+</body>
+
+</html>

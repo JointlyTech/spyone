@@ -2,7 +2,6 @@
 import path from 'path';
 import fs from 'fs';
 import { downloadRepo, getData } from './utils.mjs';
-import { buildHtml } from './buildHtml.mjs';
 import http from 'http';
 import { exec } from 'child_process';
 import os from 'os';
@@ -92,12 +91,30 @@ const server = http.createServer(function (req, res) {
   fs.readFile(resultsFilePath, function (err, data) {
     if (err) throw err;
 
+    if (outputFormat !== 'json' && outputFormat !== 'html') {
+      const errorMessage = '❌ Output format not supported (json or html)';
+      console.log(errorMessage);
+      res.writeHead(500);
+      res.write(errorMessage);
+      res.end();
+      process.exit(1);
+      return;
+    }
+
     // build html page
     if (outputFormat === 'html') {
-      const html = buildHtml(data);
       res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.write(html);
-      res.end();
+
+      fs.readFile('./index.html', null, function (error, html) {
+        if (error) {
+          res.writeHead(404);
+          res.write('Whoops! File not found!');
+        } else {
+          res.write(`<script>const fullData = ${data}</script>`);
+          res.write(html);
+        }
+        res.end();
+      });
       return;
     }
 
