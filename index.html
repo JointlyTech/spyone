@@ -17,8 +17,8 @@
             <button id='download' class='btn btn-primary'>Download</button>
         </h2>
         <div id="showWhenHasMoreThanMax" class="invisible">
-            <button id="full-result" class="btn-danger"></button>
-            <div id="max-files" class="blockquote-footer"></div>
+            <button id="fullResult" class="btn-danger"></button>
+            <div id="maxFiles" class="blockquote-footer"></div>
         </div>
         <canvas id="myChart"></canvas>
     </div>
@@ -36,8 +36,8 @@
         let data = hasMoreThanMaxFiles ? fullData.slice(0, MAX_FILE) : fullData;
 
         if (hasMoreThanMaxFiles) {
-            document.getElementById('full-result').innerText = `Show full result - (${fullData.length} files)`;
-            document.getElementById('max-files').innerText = `Only show top ${MAX_FILE} files`;
+            document.getElementById('fullResult').innerText = `Show full result - (${fullData.length} files)`;
+            document.getElementById('maxFiles').innerText = `Only show top ${MAX_FILE} files`;
             document.getElementById('showWhenHasMoreThanMax').classList.remove('invisible');
         }
 
@@ -107,7 +107,7 @@
             },
         });
 
-        document.getElementById('full-result').addEventListener('click', function () {
+        document.getElementById('fullResult').addEventListener('click', function () {
             chart.data.labels = fullData.map(([file, stats]) => file);
             chart.data.datasets[0].data = fullData.map(([file, stats]) => stats.additions);
             chart.data.datasets[1].data = fullData.map(([file, stats]) => stats.deletions);
