@@ -12,7 +12,7 @@ This script downloads any Git repository and extracts statistics from its commit
 To use it, run the following command:
 
 ```bash
-npx @jointly/spyone <repo-url> <days-to-cover> <branch-name>
+npx @jointly/spyone <repo-url> <days-to-cover> <branch-name> <output-format>
 ```
 
 The JSON output opens in your default browser.
@@ -22,3 +22,4 @@ The JSON output opens in your default browser.
 - `repo-url`: the URL of the GitHub repository to extract statistics from. This can be either an https or ssh URL.
 - `days-to-cover`: the number of days before today to consider when extracting data from commits. We suggest 30 for highly updated projects and 90 days for common day-to-day work projects.
 - `branch-name` (optional): the name of the branch to consider. Defaults to `main`.
+- `output-format` (optional): Accepts {html|json}. Defaults to `json`.
