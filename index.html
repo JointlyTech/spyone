@@ -60,31 +60,23 @@
         const fileData = data.map(([file, stats]) => ({
             file,
             additions: stats.additions,
-            deletions: stats.deletions
+            deletions: stats.deletions,
+            commitCount: stats.commitCount
         }));
 
         // Sort the files by total changes (additions + deletions)
-        fileData.sort(
-            (a, b) => b.additions + b.deletions - a.additions - a.deletions
-        );
+        fileData.sort((a, b) => b.commitCount - a.commitCount);
 
         // Create the chart data
         const chartData = {
             labels: fileData.map((file) => file.file),
             datasets: [
                 {
-                    label: 'Additions',
+                    label: 'Commit Count',
                     backgroundColor: '#36a2ea',
                     borderColor: '#36a2ea',
                     borderWidth: 1,
-                    data: fileData.map((file) => file.additions)
-                },
-                {
-                    label: 'Deletions',
-                    backgroundColor: '#f66384',
-                    borderColor: '#f66384',
-                    borderWidth: 1,
-                    data: fileData.map((file) => file.deletions)
+                    data: fileData.map((file) => file.commitCount)
                 }
             ]
         };
@@ -102,6 +94,15 @@
                     title: {
                         display: true,
                         text: 'Spyone - Your Repo Bar Chart'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            footer: (tooltipItems) => {
+                                const tooltipItem = tooltipItems[0];
+                                const file = fileData[tooltipItem.dataIndex];
+                                return `Additions: ${file.additions}\nDeletions: ${file.deletions}`;
+                            }
+                        }
                     }
                 }
             },
@@ -109,8 +110,7 @@
 
         document.getElementById('fullResult').addEventListener('click', function () {
             chart.data.labels = fullData.map(([file, stats]) => file);
-            chart.data.datasets[0].data = fullData.map(([file, stats]) => stats.additions);
-            chart.data.datasets[1].data = fullData.map(([file, stats]) => stats.deletions);
+            chart.data.datasets[0].data = fullData.map(([file, stats]) => stats.commitCount);
             chart.update();
             document.getElementById('showWhenHasMoreThanMax').classList.add('invisible');
         });
