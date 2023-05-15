@@ -7,6 +7,8 @@ const EXCLUDED_FILES = [
   'yarn.lock',
   'CHANGELOG.md',
   'composer.lock',
+  'yarn-error.log',
+  'pnpm-lock.yaml',
   ''
 ];
 
