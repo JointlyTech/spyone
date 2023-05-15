@@ -42,9 +42,6 @@ const response = await prompt([
 
 const { repoUrl, daysAmount, branchName, outputFormat } = response;
 
-// Fourth argument passed via CLI to choose the output format
-const outputFormat = process.argv[5] || 'json';
-
 const tmpDir = path.join(os.tmpdir(), 'tmp-spyone');
 
 const resultsDir = path.join(os.tmpdir(), 'results');
