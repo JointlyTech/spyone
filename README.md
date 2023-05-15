@@ -12,10 +12,8 @@ This script downloads any Git repository and extracts statistics from its commit
 To use it, run the following command:
 
 ```bash
-npx @jointly/spyone <repo-url> <days-to-cover> <branch-name> <output-format>
+npx @jointly/spyone
 ```
-
-The JSON output opens in your default browser.
 
 ### Parameters
 
