@@ -7,9 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "prettier --write .",
-    "release:patch": "npm run lint && git add . && git commit -m 'chore: linting' && npm version patch && git push --follow-tags && npm publish",
-    "release:minor": "npm run lint && git add . && git commit -m 'chore: linting' && npm version minor && git push --follow-tags && npm publish",
-    "release:major": "npm run lint && git add . && git commit -m 'chore: linting' && npm version major && git push --follow-tags && npm publish"
+    "release:patch": "npm run lint && git add . && git commit -m 'chore: linting' && git push && npm version patch && git push --follow-tags && npm publish",
+    "release:minor": "npm run lint && git add . && git commit -m 'chore: linting' && git push && npm version minor && git push --follow-tags && npm publish",
+    "release:major": "npm run lint && git add . && git commit -m 'chore: linting' && git push && npm version major && git push --follow-tags && npm publish"
   },
   "keywords": [
     "git",
