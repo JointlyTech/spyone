@@ -13,11 +13,11 @@
     <div class='container-fluid'>
         <h1 class="display-3">Welcome to spyone!</h1>
         <h2 class="display-4">
-            Download the full result (in json format):
+            Download the full result in json format:
             <button id='download' class='btn btn-primary'>Download</button>
         </h2>
         <div id="showWhenHasMoreThanMax" class="invisible">
-            <button id="fullResult" class="btn-danger"></button>
+            <button id="fullResult" class="btn btn-danger"></button>
             <div id="maxFiles" class="blockquote-footer"></div>
         </div>
         <canvas id="myChart"></canvas>
@@ -30,14 +30,14 @@
         if (!fullData) {
             alert('No data found!')
         }
-        //check if the data is available and if length is greater than 250
-        const MAX_FILE = 250;
+        //check if the data is available and if length is greater than 100
+        const MAX_FILE = 100;
         const hasMoreThanMaxFiles = fullData.length > MAX_FILE;
         let data = hasMoreThanMaxFiles ? fullData.slice(0, MAX_FILE) : fullData;
 
         if (hasMoreThanMaxFiles) {
-            document.getElementById('fullResult').innerText = `Show full result - (${fullData.length} files)`;
-            document.getElementById('maxFiles').innerText = `Only show top ${MAX_FILE} files`;
+            document.getElementById('fullResult').innerText = `Show full result - ${fullData.length} files`;
+            document.getElementById('maxFiles').innerText = `Currently showing Top ${MAX_FILE} files`;
             document.getElementById('showWhenHasMoreThanMax').classList.remove('invisible');
         }
 
