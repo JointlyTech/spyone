@@ -8,9 +8,15 @@ import os from 'os';
 import net from 'net';
 import Enquirer from 'enquirer';
 import Parse from 'args-parser';
+import { help } from './help.mjs';
 const { prompt } = Enquirer;
 
 const args = Parse(process.argv);
+
+if (args.help) {
+  console.log(help);
+  process.exit(0);
+}
 
 let DEFAULT_PORT = 9666;
 let repoUrl = args.repoUrl;
