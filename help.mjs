@@ -17,6 +17,6 @@ Options:
     The output format
     --output=json
 
-    The location to save the results
-    --save=results
+    The location to save the results. Put "." to save in the current directory
+    --save=your-folder
 `;

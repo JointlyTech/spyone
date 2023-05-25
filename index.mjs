@@ -25,6 +25,11 @@ let branchName = args.branch || 'main';
 let outputFormat = args.output || 'json';
 let saveLocation = args.save || false;
 
+// transform save argument from boolean to current directory if the user provide only --save
+if (saveLocation === true) {
+  saveLocation = '.';
+}
+
 const tmpDir = path.join(os.tmpdir(), 'tmp-spyone');
 
 // if no save location is provided, save to tmp dir, otherwise save to the provided location starting from the current directory
