@@ -23,10 +23,15 @@ let repoUrl = args.repoUrl;
 let daysAmount = args.days || 30;
 let branchName = args.branch || 'main';
 let outputFormat = args.output || 'json';
-let saveLocation = args.save || 'results';
+let saveLocation = args.save || false;
 
 const tmpDir = path.join(os.tmpdir(), 'tmp-spyone');
-const resultsDir = path.join(os.tmpdir(), saveLocation);
+
+// if no save location is provided, save to tmp dir, otherwise save to the provided location starting from the current directory
+const resultsDir =
+  saveLocation === false
+    ? path.join(os.tmpdir(), 'results')
+    : path.join(process.cwd(), saveLocation);
 
 const params = [
   {
@@ -70,7 +75,7 @@ if (Object.keys(args).length === 0) {
 }
 
 if (!repoUrl) {
-  console.error('Usage: npx @jointly/spyone --repoUrl=repourl.com');
+  console.error(help);
   process.exit(1);
 }
 
@@ -129,6 +134,11 @@ const stats = [...data.entries()].reduce((prev, curr) => {
 }, 0);
 
 console.log(`Results saved to ${resultsFilePath}, total stats: ${stats}`);
+
+// exit here if save location is provided
+if (saveLocation !== false) {
+  process.exit(0);
+}
 
 const server = http.createServer(function (req, res) {
   fs.readFile(resultsFilePath, function (err, data) {
