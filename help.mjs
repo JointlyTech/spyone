@@ -17,6 +17,7 @@ Options:
     The output format
     --output=json
 
-    The location to save the results. Put "." to save in the current directory
+    The location to save the result. Put "." to save in the current directory.
+    If the save argument is provided, the server will not start.
     --save=your-folder
 `;
