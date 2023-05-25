@@ -6,28 +6,65 @@ import http from 'http';
 import { exec } from 'child_process';
 import os from 'os';
 import net from 'net';
+import Enquirer from 'enquirer';
+import Parse from 'args-parser';
+const { prompt } = Enquirer;
 
-// Default port for the server
+const args = Parse(process.argv);
+
 let DEFAULT_PORT = 9666;
-
-// First argument passed via CLI is the url of a github repo
-const repoUrl = process.argv[2];
-
-// Second argument passed via CLI is the number of days to consider
-const daysAmount = process.argv[3];
-
-// Third argument passed via CLI is the name of the branch to consider
-const branchName = process.argv[4] || 'main';
-
-// Fourth argument passed via CLI to choose the output format
-const outputFormat = process.argv[5] || 'json';
+let repoUrl = args.repoUrl;
+let daysAmount = args.days || 30;
+let branchName = args.branch || 'main';
+let outputFormat = args.output || 'json';
+let saveLocation = args.save || 'results';
 
 const tmpDir = path.join(os.tmpdir(), 'tmp-spyone');
+const resultsDir = path.join(os.tmpdir(), saveLocation);
 
-const resultsDir = path.join(os.tmpdir(), 'results');
+const params = [
+  {
+    type: 'input',
+    name: 'repoUrl',
+    message: 'Enter the url of the repo to analyze',
+    required: true
+  },
+  {
+    type: 'input',
+    name: 'daysAmount',
+    message: 'Enter the number of days to consider',
+    initial: 30,
+    required: true
+  },
+  {
+    type: 'input',
+    name: 'branchName',
+    message: 'Enter the name of the branch to consider',
+    initial: 'main',
+    required: true
+  },
+  {
+    type: 'select',
+    name: 'outputFormat',
+    message: 'Choose the output format',
+    choices: ['json', 'html'],
+    initial: 'json',
+    required: true
+  }
+];
 
-if (!repoUrl || !daysAmount) {
-  console.error('Usage: npx @jointly/spyone <repo-url> <commit-count>');
+// Interactive mode if no args
+if (Object.keys(args).length === 0) {
+  const promptValues = await prompt(params);
+  // override params with prompt values
+  repoUrl = promptValues.repoUrl;
+  daysAmount = promptValues.daysAmount;
+  branchName = promptValues.branchName;
+  outputFormat = promptValues.outputFormat;
+}
+
+if (!repoUrl) {
+  console.error('Usage: npx @jointly/spyone --repoUrl=repourl.com');
   process.exit(1);
 }
 
