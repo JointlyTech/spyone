@@ -28,13 +28,13 @@ and you don't need to provide any input.
 You will be able to save the resulting heatmap in any location on your computer just with --save flag:
 
 ```bash
-npx @jointly/spyone --repo-url=<repo-url> --days-to-cover=30 --branch-name=main --output-format=json --save
+npx @jointly/spyone --repoUrl=<repo-url> --days=30 --branch=main --output=json --save
 ```
 
 ### Parameters
 
-- `repo-url`: the URL of the GitHub repository to extract statistics from. This can be either an https or ssh URL.
-- `days-to-cover`: the number of days before today to consider when extracting data from commits. We suggest 30 for highly updated projects and 90 days for common day-to-day work projects.
-- `branch-name` (optional): the name of the branch to consider. Defaults to `main`.
-- `output-format` (optional): Accepts {html|json}. Defaults to `json`.
+- `repoUrl`: the URL of the GitHub repository to extract statistics from. This can be either an https or ssh URL.
+- `days`: the number of days before today to consider when extracting data from commits. We suggest 30 for highly updated projects and 90 days for common day-to-day work projects.
+- `branch` (optional): the name of the branch to consider. Defaults to `main`.
+- `output` (optional): Accepts {html|json}. Defaults to `json`.
 - `save` (optional): If provided, the resulting heatmap will be saved in a file in the current directory or in the directory specified inside the `save` parameter.
