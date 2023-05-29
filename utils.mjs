@@ -27,6 +27,14 @@ export const downloadRepo = (repoUrl, dir, branchName = 'main') => {
   });
 };
 
+// Check if the repo url is valid and well formatted
+export const isValidRepoUrl = (repoUrl) => {
+  const regex = new RegExp(
+    '^https:\\/\\/github.com\\/[a-zA-Z0-9-]+\\/[a-zA-Z0-9-]+$'
+  );
+  return regex.test(repoUrl);
+};
+
 // Given a path to a directory, get the list of addition and deletion counts from the git history of each file
 export const getData = (dir, daysAmount) => {
   return new Promise(async (resolve, reject) => {
