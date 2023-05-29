@@ -159,8 +159,11 @@ const server = http.createServer(function (req, res) {
   fs.readFile(resultsFilePath, function (err, data) {
     if (err) throw err;
 
-    if (output !== 'json' && output !== 'html') {
-      const errorMessage = '❌ Output format not supported (json or html)';
+    if (!cliArguments.output.choices.includes(output)) {
+      const errorMessage =
+        '❌ Output format not supported (' +
+        cliArguments.output.choices.join(' or ') +
+        ')';
       console.log(errorMessage);
       res.writeHead(500);
       res.write(errorMessage);
