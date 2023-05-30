@@ -159,7 +159,7 @@ const server = http.createServer(function (req, res) {
   fs.readFile(resultsFilePath, function (err, data) {
     if (err) throw err;
 
-    if (!cliArguments.output.choices.includes(output)) {
+    if (!isInteractive && !cliArguments.output.choices.includes(output)) {
       const errorMessage =
         '❌ Output format not supported (' +
         cliArguments.output.choices.join(' or ') +
@@ -169,7 +169,6 @@ const server = http.createServer(function (req, res) {
       res.write(errorMessage);
       res.end();
       process.exit(1);
-      return;
     }
 
     // build html page
