@@ -1,6 +1,6 @@
 {
   "name": "@jointly/spyone",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A simple script able to download any Git repository and extracts statistics from its commits, showing most touched files.",
   "main": "index.mjs",
   "bin": "./index.mjs",
