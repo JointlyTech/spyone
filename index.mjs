@@ -1,35 +1,98 @@
 #!/usr/bin/env node
 import path from 'path';
 import fs from 'fs';
-import { downloadRepo, getData } from './utils.mjs';
+import { downloadRepo, getData, isValidRepoUrl } from './utils.mjs';
 import http from 'http';
 import { exec } from 'child_process';
 import os from 'os';
 import net from 'net';
+import Enquirer from 'enquirer';
+import Parse from 'args-parser';
+import { help } from './help.mjs';
+const { prompt } = Enquirer;
 
-// Default port for the server
+const args = Parse(process.argv);
+const isInteractive = Object.keys(args).length === 0;
+
+if (args.help) {
+  console.log(help);
+  process.exit(0);
+}
+
+// Define possible arguments with his default values, both for interactive and cli mode
+const cliArguments = {
+  repoUrl: {
+    type: 'input',
+    default: '',
+    message: 'Enter the url of the repo to analyze',
+    required: true
+  },
+  days: {
+    type: 'input',
+    default: 30,
+    message: 'Enter the number of days to consider',
+    required: true
+  },
+  branch: {
+    type: 'input',
+    default: 'main',
+    message: 'Enter the name of the branch to consider',
+    required: true
+  },
+  output: {
+    type: 'select',
+    default: 'json',
+    message: 'Choose the output format',
+    choices: ['json', 'html'],
+    required: true
+  },
+  save: {
+    type: null,
+    default: false,
+    required: false
+  }
+};
+
 let DEFAULT_PORT = 9666;
 
-// First argument passed via CLI is the url of a github repo
-const repoUrl = process.argv[2];
+// Transform to compatible format for enquirer
+const promptParams = Object.keys(cliArguments)
+  .filter((name) => cliArguments[name].type !== null)
+  .map((name) => {
+    return {
+      name,
+      ...cliArguments[name]
+    };
+  });
 
-// Second argument passed via CLI is the number of days to consider
-const daysAmount = process.argv[3];
+// Destructure the arguments, if interactive mode is enabled, prompt the user for the values of the arguments, otherwise use the provided arguments. If no arguments are provided, use the default values
+const {
+  repoUrl = cliArguments.repoUrl.default,
+  days = cliArguments.days.default,
+  branch = cliArguments.branch.default,
+  output = cliArguments.output.default,
+  save = cliArguments.save.default
+} = isInteractive ? await prompt(promptParams) : args;
 
-// Third argument passed via CLI is the name of the branch to consider
-const branchName = process.argv[4] || 'main';
+// If no valid repo url is provided, exit with help
+if (!isValidRepoUrl(repoUrl)) {
+  console.error('❌ Invalid repo url');
+  console.error(help);
+  process.exit(1);
+}
 
-// Fourth argument passed via CLI to choose the output format
-const outputFormat = process.argv[5] || 'json';
+// transform save argument from boolean to current directory if the user provide only --save
+if (save === true) {
+  save = '.';
+}
 
 const tmpDir = path.join(os.tmpdir(), 'tmp-spyone');
 
-const resultsDir = path.join(os.tmpdir(), 'results');
-
-if (!repoUrl || !daysAmount) {
-  console.error('Usage: npx @jointly/spyone <repo-url> <commit-count>');
-  process.exit(1);
-}
+// if no save location is provided, save to tmp dir, otherwise save to the provided location starting from the current directory
+const resultsDir =
+  save === false
+    ? path.join(os.tmpdir(), 'results')
+    : path.join(process.cwd(), save);
 
 // Drop folder if exists
 if (fs.existsSync(tmpDir)) {
@@ -41,11 +104,11 @@ fs.mkdirSync(tmpDir);
 
 // Download the repo
 console.log('Downloading repo...');
-await downloadRepo(repoUrl, tmpDir, branchName);
+await downloadRepo(repoUrl, tmpDir, branch);
 
 // Get the data
 console.log('Getting data...');
-let data = await getData(tmpDir, daysAmount);
+let data = await getData(tmpDir, days);
 
 // Sort data map by commitsCount, if equal sort by additions + deletions
 data = new Map(
@@ -69,7 +132,7 @@ const resultsFileName = `${today.getFullYear()}-${
 }-${today.getDate()}-${today.getHours()}-${today.getMinutes()}-${repoUrl
   .split('/')
   .pop()
-  .replace('.git', '')}-${daysAmount}-${branchName}.json`;
+  .replace('.git', '')}-${days}-${branch}.json`;
 const resultsFilePath = path.join(resultsDir, resultsFileName);
 const fileContent = JSON.stringify([...data.entries()]);
 fs.writeFileSync(resultsFilePath, fileContent);
@@ -87,22 +150,29 @@ const stats = [...data.entries()].reduce((prev, curr) => {
 
 console.log(`Results saved to ${resultsFilePath}, total stats: ${stats}`);
 
+// exit here if save location is provided
+if (save !== false) {
+  process.exit(0);
+}
+
 const server = http.createServer(function (req, res) {
   fs.readFile(resultsFilePath, function (err, data) {
     if (err) throw err;
 
-    if (outputFormat !== 'json' && outputFormat !== 'html') {
-      const errorMessage = '❌ Output format not supported (json or html)';
+    if (!isInteractive && !cliArguments.output.choices.includes(output)) {
+      const errorMessage =
+        '❌ Output format not supported (' +
+        cliArguments.output.choices.join(' or ') +
+        ')';
       console.log(errorMessage);
       res.writeHead(500);
       res.write(errorMessage);
       res.end();
       process.exit(1);
-      return;
     }
 
     // build html page
-    if (outputFormat === 'html') {
+    if (output === 'html') {
       res.writeHead(200, { 'Content-Type': 'text/html' });
 
       fs.readFile('./index.html', null, function (error, html) {
