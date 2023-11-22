@@ -20,7 +20,7 @@ You will be prompted to enter the URL of the repository you want to analyze, the
 You can provide all the parameters in the command line, like this:
 
 ```bash
-npx @jointly/spyone --repo-url=<repo-url> --days-to-cover=30 --branch-name=main --output-format=json
+npx @jointly/spyone --repoUrl=<repo-url> --days=30 --branch=main --output=html
 ```
 
 and you don't need to provide any input.
@@ -28,7 +28,7 @@ and you don't need to provide any input.
 You will be able to save the resulting heatmap in any location on your computer just with --save flag:
 
 ```bash
-npx @jointly/spyone --repoUrl=<repo-url> --days=30 --branch=main --output=json --save
+npx @jointly/spyone --repoUrl=<repo-url> --days=30 --branch=main --output=html --save
 ```
 
 ### Parameters
