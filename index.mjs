@@ -81,9 +81,9 @@ if (!isValidRepoUrl(repoUrl)) {
   process.exit(1);
 }
 
-// transform save argument from boolean to current directory if the user provide only --save
+let savePath = 'results';
 if (save === true) {
-  save = '.';
+  savePath = '.';
 }
 
 const tmpDir = path.join(os.tmpdir(), 'tmp-spyone');
@@ -92,7 +92,7 @@ const tmpDir = path.join(os.tmpdir(), 'tmp-spyone');
 const resultsDir =
   save === false
     ? path.join(os.tmpdir(), 'results')
-    : path.join(process.cwd(), save);
+    : path.join(process.cwd(), savePath);
 
 // Drop folder if exists
 if (fs.existsSync(tmpDir)) {
